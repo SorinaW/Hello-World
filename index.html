@@ -1,0 +1,1359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SaaS Economics Masterclass</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            color: #e4e4e7;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            padding: 30px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #a1a1aa;
+            font-size: 0.95rem;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            height: 12px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+
+        .progress-text {
+            text-align: center;
+            font-size: 0.85rem;
+            color: #a1a1aa;
+            margin-bottom: 20px;
+        }
+
+        /* Level Cards */
+        .level-card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .level-card:hover {
+            background: rgba(255,255,255,0.08);
+            transform: translateY(-2px);
+        }
+
+        .level-card.locked {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .level-card.locked:hover {
+            transform: none;
+        }
+
+        .level-card.completed {
+            border-color: #10b981;
+        }
+
+        .level-card.current {
+            border-color: #667eea;
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .level-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .level-number {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #667eea;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .level-status {
+            font-size: 0.75rem;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+
+        .status-completed {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+        }
+
+        .status-current {
+            background: rgba(102, 126, 234, 0.2);
+            color: #667eea;
+        }
+
+        .status-locked {
+            background: rgba(255,255,255,0.1);
+            color: #71717a;
+        }
+
+        .level-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .level-desc {
+            font-size: 0.9rem;
+            color: #a1a1aa;
+        }
+
+        /* Content View */
+        .content-view {
+            display: none;
+        }
+
+        .content-view.active {
+            display: block;
+        }
+
+        .back-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: none;
+            border: none;
+            color: #667eea;
+            font-size: 1rem;
+            cursor: pointer;
+            padding: 10px 0;
+            margin-bottom: 20px;
+        }
+
+        .content-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .content-section {
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .content-section h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #667eea;
+        }
+
+        .content-section p {
+            margin-bottom: 12px;
+            font-size: 0.95rem;
+        }
+
+        .formula {
+            background: rgba(0,0,0,0.3);
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-family: 'SF Mono', Monaco, monospace;
+            font-size: 0.9rem;
+            margin: 12px 0;
+            overflow-x: auto;
+        }
+
+        .example-box {
+            background: rgba(102, 126, 234, 0.1);
+            border-left: 3px solid #667eea;
+            padding: 15px;
+            border-radius: 0 8px 8px 0;
+            margin: 15px 0;
+        }
+
+        .example-box h4 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #667eea;
+        }
+
+        .benchmark-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            font-size: 0.85rem;
+        }
+
+        .benchmark-table th, .benchmark-table td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .benchmark-table th {
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .buffett-quote {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            font-style: italic;
+            border: 1px solid rgba(102, 126, 234, 0.3);
+        }
+
+        .buffett-quote::before {
+            content: '"';
+            font-size: 3rem;
+            color: #667eea;
+            line-height: 0;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .buffett-quote .author {
+            display: block;
+            text-align: right;
+            font-style: normal;
+            color: #a1a1aa;
+            margin-top: 10px;
+            font-size: 0.85rem;
+        }
+
+        /* Quiz */
+        .quiz-section {
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .quiz-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .quiz-progress {
+            text-align: center;
+            color: #a1a1aa;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+        }
+
+        .question-card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .question-text {
+            font-size: 1rem;
+            font-weight: 500;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .option {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 10px;
+            background: rgba(255,255,255,0.05);
+            border: 2px solid rgba(255,255,255,0.1);
+            border-radius: 10px;
+            color: #e4e4e7;
+            font-size: 0.95rem;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .option:hover {
+            background: rgba(255,255,255,0.1);
+            border-color: rgba(255,255,255,0.2);
+        }
+
+        .option.selected {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.2);
+        }
+
+        .option.correct {
+            border-color: #10b981;
+            background: rgba(16, 185, 129, 0.2);
+        }
+
+        .option.incorrect {
+            border-color: #ef4444;
+            background: rgba(239, 68, 68, 0.2);
+        }
+
+        .option:disabled {
+            cursor: not-allowed;
+        }
+
+        .explanation {
+            background: rgba(16, 185, 129, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 15px;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        .explanation.show {
+            display: block;
+        }
+
+        .submit-btn, .next-btn, .start-quiz-btn {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .next-btn {
+            background: #10b981;
+            color: white;
+        }
+
+        .start-quiz-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        /* Results */
+        .results-card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .results-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        .results-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .results-score {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #667eea;
+            margin: 20px 0;
+        }
+
+        .results-message {
+            color: #a1a1aa;
+            margin-bottom: 20px;
+        }
+
+        .retry-btn {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        /* Graduation */
+        .graduation-view {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .graduation-icon {
+            font-size: 5rem;
+            margin-bottom: 20px;
+        }
+
+        .graduation-title {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+        }
+
+        .reset-btn {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            margin-top: 30px;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.05);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.2);
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Home View -->
+        <div id="home-view" class="home-view">
+            <div class="header">
+                <h1>SaaS Economics Masterclass</h1>
+                <p>Build, Scale & Exit for Millions</p>
+            </div>
+
+            <div class="progress-container">
+                <div class="progress-bar" id="progress-bar"></div>
+            </div>
+            <div class="progress-text" id="progress-text"></div>
+
+            <div id="levels-container"></div>
+        </div>
+
+        <!-- Content View -->
+        <div id="content-view" class="content-view"></div>
+    </div>
+
+    <script>
+        // Course Data
+        const courseData = {
+            levels: [
+                {
+                    id: 1,
+                    title: "The Language of SaaS",
+                    desc: "ARR, MRR, Gross Margin — speak like a CFO",
+                    content: `
+                        <div class="content-section">
+                            <h3>Annual Recurring Revenue (ARR)</h3>
+                            <p>The annualized value of your recurring subscription revenue. This is THE metric for measuring scale.</p>
+                            <div class="formula">ARR = MRR × 12</div>
+                            <div class="example-box">
+                                <h4>📊 HubSpot Journey</h4>
+                                <p>2007: $0 ARR (founded)<br>
+                                2014: $115M ARR (IPO)<br>
+                                2024: $2.5B+ ARR<br>
+                                Valuation: $11M → $25B+</p>
+                            </div>
+                        </div>
+
+                        <div class="content-section">
+                            <h3>Monthly Recurring Revenue (MRR)</h3>
+                            <p>Predictable revenue from subscriptions each month.</p>
+                            <div class="formula">Net New MRR = New + Expansion - Churned - Contraction</div>
+                            <div class="example-box">
+                                <h4>🚀 Slack</h4>
+                                <p>$1B valuation in 8 months<br>
+                                $100M ARR in 3 years — one of fastest ever<br>
+                                Acquired for $27.7B</p>
+                            </div>
+                        </div>
+
+                        <div class="content-section">
+                            <h3>Average Contract Value (ACV)</h3>
+                            <table class="benchmark-table">
+                                <tr><th>Company</th><th>Segment</th><th>ACV</th></tr>
+                                <tr><td>Notion</td><td>SMB</td><td>$96-500/yr</td></tr>
+                                <tr><td>HubSpot</td><td>Mid-Market</td><td>$10-50K/yr</td></tr>
+                                <tr><td>Salesforce</td><td>Enterprise</td><td>$100-500K+/yr</td></tr>
+                                <tr><td>Snowflake</td><td>Enterprise</td><td>$500K-5M+/yr</td></tr>
+                            </table>
+                        </div>
+
+                        <div class="content-section">
+                            <h3>Gross Margin</h3>
+                            <p>Revenue minus Cost of Goods Sold. Shows pricing power.</p>
+                            <div class="formula">Gross Margin = (Revenue - COGS) / Revenue × 100</div>
+                            <table class="benchmark-table">
+                                <tr><th>Rating</th><th>Margin</th></tr>
+                                <tr><td>Excellent</td><td>>80%</td></tr>
+                                <tr><td>Good</td><td>70-80%</td></tr>
+                                <tr><td>Concerning</td><td><70%</td></tr>
+                            </table>
+                            <div class="example-box">
+                                <h4>💰 Figma</h4>
+                                <p>Gross Margin: ~90%<br>
+                                Why? Browser-based, minimal hosting costs<br>
+                                Result: Adobe offered $20B (50x ARR!)</p>
+                            </div>
+                        </div>
+
+                        <div class="buffett-quote">
+                            The single most important decision in evaluating a business is pricing power. If you've got the power to raise prices without losing business to a competitor, you've got a very good business.
+                            <span class="author">— Warren Buffett</span>
+                        </div>
+                    `,
+                    quiz: [
+                        {
+                            q: "A SaaS company has $500K MRR. What is their ARR?",
+                            options: ["$500,000", "$6,000,000", "$41,667", "$5,000,000"],
+                            correct: 1,
+                            explanation: "ARR = MRR × 12 = $500,000 × 12 = $6,000,000"
+                        },
+                        {
+                            q: "Figma was offered $20B by Adobe at ~$450M ARR. What multiple is this?",
+                            options: ["10-12x ARR", "20-25x ARR", "44-50x ARR", "5-8x ARR"],
+                            correct: 2,
+                            explanation: "$20B ÷ $450M = 44x. Extraordinary multiple reflecting 100% growth, 90%+ margins, and market dominance."
+                        },
+                        {
+                            q: "SaaS COGS includes all EXCEPT:",
+                            options: ["AWS hosting costs", "Customer support salaries", "Sales team commissions", "Payment processing fees"],
+                            correct: 2,
+                            explanation: "Sales commissions are S&M expenses (OpEx), not COGS. COGS = hosting, support, payment processing."
+                        },
+                        {
+                            q: "What does high gross margin indicate per Buffett?",
+                            options: ["Low R&D spending", "Pricing power and competitive moat", "Low customer acquisition costs", "Slow but profitable growth"],
+                            correct: 1,
+                            explanation: "High margins = pricing power = the ability to raise prices without losing customers. That's Buffett's definition of a great business."
+                        }
+                    ]
+                },
+                {
+                    id: 2,
+                    title: "Unit Economics",
+                    desc: "CAC, LTV, Payback — the math that matters",
+                    content: `
+                        <div class="content-section">
+                            <h3>Customer Acquisition Cost (CAC)</h3>
+                            <p>Total cost to acquire one new customer.</p>
+                            <div class="formula">CAC = Sales & Marketing Spend / New Customers</div>
+                            <div class="example-box">
+                                <h4>📈 2024 Benchmark</h4>
+                                <p>Median: $2.00 to acquire $1.00 of New ARR<br>
+                                Bottom quartile: $2.82 per $1.00<br>
+                                Up 14% from 2023 — acquisition is harder</p>
+                            </div>
+                        </div>
+
+                        <div class="content-section">
+                            <h3>Customer Lifetime Value (LTV)</h3>
+                            <p>Total revenue expected from a customer over their lifetime.</p>
+                            <div class="formula">LTV = (ARPA × Gross Margin) / Churn Rate</div>
+                            <div class="example-box">
+                                <h4>❄️ Snowflake</h4>
+                                <p>Consumption-based = infinite expansion<br>
+                                NRR 150%+ = customers spend 50% more each year<br>
+                                LTV grows exponentially, not linearly</p>
+                            </div>
+                        </div>
+
+                        <div class="content-section">
+                            <h3>LTV:CAC Ratio — The Golden Ratio</h3>
+                            <table class="benchmark-table">
+                                <tr><th>Ratio</th><th>Meaning</th></tr>
+                                <tr><td><1:1</td><td>Losing money — unsustainable</td></tr>
+                                <tr><td>1:1</td><td>Breaking even</td></tr>
+                                <tr><td>3:1</td><td>Healthy — industry minimum</td></tr>
+                                <tr><td>5:1</td><td>Excellent efficiency</td></tr>
+                                <tr><td>>5:1</td><td>Possibly under-investing</td></tr>
+                            </table>
+                        </div>
+
+                        <div class="content-section">
+                            <h3>CAC Payback Period</h3>
+                            <p>Months until a customer pays back acquisition cost.</p>
+                            <div class="formula">CAC Payback = CAC / (Monthly Revenue × Gross Margin)</div>
+                            <table class="benchmark-table">
+                                <tr><th>ARR</th><th>Median Payback</th></tr>
+                                <tr><td><$1M</td><td>2 months</td></tr>
+                                <tr><td>$1-5M</td><td>8 months</td></tr>
+                                <tr><td>$5-15M</td><td>14 months</td></tr>
+                                <tr><td>$50M+</td><td>20 months</td></tr>
+                            </table>
+                            <div class="example-box">
+                                <h4>🏆 Atlassian</h4>
+                                <p>CAC Payback: <12 months at scale<br>
+                                Secret: Almost no sales team<br>
+                                One of only 5 companies to achieve this</p>
+                            </div>
+                        </div>
+                    `,
+                    quiz: [
+                        {
+                            q: "A company spends $1M on S&M in Q1 and acquires 100 customers. What is their CAC?",
+                            options: ["$100", "$1,000", "$10,000", "$100,000"],
+                            correct: 2,
+                            explanation: "CAC = $1,000,000 / 100 = $10,000 per customer"
+                        },
+                        {
+                            q: "LTV of $30,000 and CAC of $10,000. What's the ratio and interpretation?",
+                            options: ["0.33:1 — losing money", "3:1 — healthy, industry standard", "30:1 — excellent", "3:1 — under-investing"],
+                            correct: 1,
+                            explanation: "LTV:CAC = $30K / $10K = 3:1. This is the minimum VCs want — sustainable business model."
+                        },
+                        {
+                            q: "Median CAC Payback for a $50M+ ARR company (2024)?",
+                            options: ["2 months", "8 months", "14 months", "20 months"],
+                            correct: 3,
+                            explanation: "CAC Payback worsens with scale. Early-stage (~2mo) vs $50M+ (~20mo) because you're reaching colder audiences."
+                        },
+                        {
+                            q: "Which company achieved exceptional LTV:CAC through product-led viral growth?",
+                            options: ["Salesforce", "Zoom", "Oracle", "SAP"],
+                            correct: 1,
+                            explanation: "Zoom's freemium + viral adoption during COVID = users became evangelists, CAC plummeted while LTV soared."
+                        }
+                    ]
+                },
+                {
+                    id: 3,
+                    title: "Retention Metrics",
+                    desc: "NRR, GRR, Churn — the hidden growth engine",
+                    content: `
+                        <div class="buffett-quote">
+                            It costs 5-25x more to acquire a new customer than to retain an existing one.
+                        </div>
+
+                        <div class="content-section">
+                            <h3>Gross Revenue Retention (GRR)</h3>
+                            <p>Revenue retained EXCLUDING upsells. How sticky is your product?</p>
+                            <div class="formula">GRR = (Start ARR - Churn - Contraction) / Start ARR × 100</div>
+                            <table class="benchmark-table">
+                                <tr><th>Rating</th><th>GRR</th></tr>
+                                <tr><td>Excellent</td><td>>95%</td></tr>
+                                <tr><td>Good</td><td>90-95%</td></tr>
+                                <tr><td>Acceptable</td><td>85-90%</td></tr>
+                                <tr><td>Concerning</td><td><85%</td></tr>
+                            </table>
+                        </div>
+
+                        <div class="content-section">
+                            <h3>Net Revenue Retention (NRR) — The Magic Number</h3>
+                            <p>Revenue retained INCLUDING expansion. NRR >100% = growth without new customers.</p>
+                            <div class="formula">NRR = (Start + Expansion - Churn - Contraction) / Start × 100</div>
+                            <table class="benchmark-table">
+                                <tr><th>Company</th><th>NRR</th><th>Why</th></tr>
+                                <tr><td>Snowflake</td><td>150%+</td><td>Consumption-based</td></tr>
+                                <tr><td>Datadog</td><td>130%+</td><td>Multi-product</td></tr>
+                                <tr><td>HubSpot</td><td>~100%</td><td>SMB focus</td></tr>
+                                <tr><td>Squarespace</td><td>~85%</td><td>High SMB churn</td></tr>
+                            </table>
+                            <div class="example-box">
+                                <h4>💎 Valuation Impact</h4>
+                                <p>NRR >120%: 11.7x revenue multiple<br>
+                                Industry median: 5.6x<br>
+                                <strong>NRR doubles your valuation!</strong></p>
+                            </div>
+                        </div>
+
+                        <div class="content-section">
+                            <h3>Negative Churn — The Holy Grail</h3>
+                            <p>When expansion > churn, NRR exceeds 100%.</p>
+                            <div class="example-box">
+                                <h4>🐕 Datadog</h4>
+                                <p>NRR >130% for 4+ consecutive years<br>
+                                At IPO: 146% NRR<br>
+                                If they stopped selling, still +35% growth from existing customers</p>
+                            </div>
+                            <p><strong>How to achieve it:</strong></p>
+                            <p>• Usage-based pricing (Snowflake, Twilio)<br>
+                            • Multi-product platform (Datadog, HubSpot)<br>
+                            • Seat-based expansion (Slack, Notion)<br>
+                            • Land and expand strategy</p>
+                        </div>
+                    `,
+                    quiz: [
+                        {
+                            q: "Start with $10M ARR. Lose $1M to churn, $500K downgrades, gain $2M upsells. What's NRR?",
+                            options: ["85%", "95%", "105%", "120%"],
+                            correct: 2,
+                            explanation: "NRR = ($10M - $1M - $0.5M + $2M) / $10M = $10.5M / $10M = 105%"
+                        },
+                        {
+                            q: "Why does Snowflake maintain 150%+ NRR?",
+                            options: ["Low prices prevent churn", "Consumption-based pricing — customers use more data yearly", "Long-term lock-in contracts", "Heavy customer support investment"],
+                            correct: 1,
+                            explanation: "Usage-based model = as data grows (and it always does), bills grow automatically. No cap on expansion."
+                        },
+                        {
+                            q: "What valuation premium do NRR >120% companies get vs median?",
+                            options: ["10% premium", "50% premium", "More than 2x the multiple", "No significant difference"],
+                            correct: 2,
+                            explanation: "NRR >120% = 11.7x multiple. Industry median = 5.6x. That's more than double!"
+                        },
+                        {
+                            q: "What does 'negative churn' actually mean?",
+                            options: ["Customers are complaining", "Revenue from existing customers declining", "Expansion exceeds churn, NRR >100%", "Losing money on each customer"],
+                            correct: 2,
+                            explanation: "'Negative churn' is misleading — it's positive! Upsells exceed losses, so existing customers drive net growth."
+                        }
+                    ]
+                },
+                {
+                    id: 4,
+                    title: "Growth Efficiency",
+                    desc: "Rule of 40, Burn Multiple, Magic Number",
+                    content: `
+                        <div class="content-section">
+                            <h3>The Rule of 40</h3>
+                            <p>Growth rate + profit margin should exceed 40%.</p>
+                            <div class="formula">Rule of 40 = Revenue Growth % + EBITDA Margin %</div>
+                            <table class="benchmark-table">
+                                <tr><th>Scenario</th><th>Growth</th><th>Margin</th><th>Score</th></tr>
+                                <tr><td>High growth</td><td>60%</td><td>-15%</td><td>45% ✓</td></tr>
+                                <tr><td>Balanced</td><td>25%</td><td>20%</td><td>45% ✓</td></tr>
+                                <tr><td>Struggling</td><td>15%</td><td>-10%</td><td>5% ✗</td></tr>
+                            </table>
+                            <div class="example-box">
+                                <h4>💜 Figma</h4>
+                                <p>Growth: 46% + Margin: 17% = <strong>63%</strong><br>
+                                Well above Rule of 40</p>
+                            </div>
+                        </div>
+
+                        <div class="content-section">
+                            <h3>Burn Multiple</h3>
+                            <p>How much cash burned per dollar of new ARR.</p>
+                            <div class="formula">Burn Multiple = Net Cash Burn / Net New ARR</div>
+                            <table class="benchmark-table">
+                                <tr><th>Multiple</th><th>Rating</th></tr>
+                                <tr><td><1.0x</td><td>Excellent</td></tr>
+                                <tr><td>1.0-1.5x</td><td>Good</td></tr>
+                                <tr><td>1.5-2.0x</td><td>Average</td></tr>
+                                <tr><td>>2.0x</td><td>Concerning</td></tr>
+                            </table>
+                            <p>Post-2022: VCs now screen heavily on burn multiple. Many unicorns with 3-5x burn saw valuations collapse 80%+.</p>
+                        </div>
+
+                        <div class="content-section">
+                            <h3>Magic Number</h3>
+                            <p>How efficiently S&M converts to revenue growth.</p>
+                            <div class="formula">Magic Number = (Current Qtr ARR - Prev Qtr ARR) × 4 / Prev Qtr S&M</div>
+                            <table class="benchmark-table">
+                                <tr><th>Number</th><th>Action</th></tr>
+                                <tr><td>>1.0</td><td>Invest more in S&M</td></tr>
+                                <tr><td>0.75-1.0</td><td>Continue current spend</td></tr>
+                                <tr><td>0.5-0.75</td><td>Optimize first</td></tr>
+                                <tr><td><0.5</td><td>Fix unit economics</td></tr>
+                            </table>
+                            <div class="example-box">
+                                <h4>Figma vs Adobe</h4>
+                                <p>Figma Magic Number: ~1.0<br>
+                                Adobe Magic Number: ~0.39<br>
+                                Figma is 2.5x more efficient!</p>
+                            </div>
+                        </div>
+
+                        <div class="content-section">
+                            <h3>T2D3 Framework (Bessemer)</h3>
+                            <p>Triple, Triple, Double, Double, Double</p>
+                            <table class="benchmark-table">
+                                <tr><th>Year</th><th>Growth</th><th>Example</th></tr>
+                                <tr><td>Year 1</td><td>3x</td><td>$1M → $3M</td></tr>
+                                <tr><td>Year 2</td><td>3x</td><td>$3M → $9M</td></tr>
+                                <tr><td>Year 3</td><td>2x</td><td>$9M → $18M</td></tr>
+                                <tr><td>Year 4</td><td>2x</td><td>$18M → $36M</td></tr>
+                                <tr><td>Year 5</td><td>2x</td><td>$36M → $72M</td></tr>
+                            </table>
+                        </div>
+                    `,
+                    quiz: [
+                        {
+                            q: "35% YoY growth with -10% EBITDA margin. Rule of 40 score and interpretation?",
+                            options: ["25% — below threshold, concerning", "35% — acceptable for growth stage", "45% — above threshold, healthy", "-350% — deeply concerning"],
+                            correct: 0,
+                            explanation: "Rule of 40 = 35% + (-10%) = 25%. Below 40% threshold — needs better growth OR margins."
+                        },
+                        {
+                            q: "Company burns $3M cash, generates $2M Net New ARR. Burn Multiple?",
+                            options: ["0.67x — excellent", "1.5x — average", "2.0x — concerning", "6.0x — unsustainable"],
+                            correct: 1,
+                            explanation: "Burn Multiple = $3M / $2M = 1.5x. Average — not great, not terrible. Room to improve."
+                        },
+                        {
+                            q: "T2D3: $2M ARR end of Year 1. Target for end of Year 3?",
+                            options: ["$6M", "$12M", "$18M", "$36M"],
+                            correct: 2,
+                            explanation: "T2D3 = Triple, Triple, Double... Year 1: $2M → Year 2: $6M (3x) → Year 3: $18M (3x)"
+                        },
+                        {
+                            q: "Figma's Magic Number is ~1.0 vs Adobe's ~0.39. What does this mean?",
+                            options: ["Figma spends less on sales overall", "Figma generates 2.5x more revenue per S&M dollar", "Adobe has higher gross margins", "Adobe is growing faster"],
+                            correct: 1,
+                            explanation: "Magic Number 1.0 / 0.39 ≈ 2.5x. Figma generates $1 of new profit per S&M dollar vs Adobe's $0.39."
+                        }
+                    ]
+                },
+                {
+                    id: 5,
+                    title: "Moats & Competitive Advantage",
+                    desc: "Buffett's framework applied to SaaS",
+                    content: `
+                        <div class="buffett-quote">
+                            The key to investing is not assessing how much an industry is going to affect society, or how much it will grow, but rather determining the competitive advantage of any given company and, above all, the durability of that advantage.
+                            <span class="author">— Warren Buffett</span>
+                        </div>
+
+                        <div class="content-section">
+                            <h3>1. Switching Costs</h3>
+                            <p>The pain and cost to move to a competitor.</p>
+                            <p><strong>SaaS switching costs:</strong><br>
+                            • Data lock-in (years of history)<br>
+                            • Integration lock-in (50+ connected tools)<br>
+                            • Training lock-in (team expertise)<br>
+                            • Process lock-in (workflows built around it)</p>
+                            <div class="example-box">
+                                <h4>☁️ Salesforce</h4>
+                                <p>150+ integrations per enterprise customer<br>
+                                Switching cost: $500K-$2M+<br>
+                                GRR >90% despite being expensive</p>
+                            </div>
+                        </div>
+
+                        <div class="content-section">
+                            <h3>2. Network Effects</h3>
+                            <p>Product becomes more valuable as more people use it.</p>
+                            <p><strong>Types:</strong><br>
+                            • Direct: Slack is better with whole team<br>
+                            • Indirect: Figma's plugin ecosystem<br>
+                            • Data: AI products improve with usage</p>
+                            <div class="example-box">
+                                <h4>🎨 Figma</h4>
+                                <p>Collaborative design = team must be together<br>
+                                500+ community plugins<br>
+                                Result: 80-90% market share in UI/UX</p>
+                            </div>
+                        </div>
+
+                        <div class="content-section">
+                            <h3>3. Brand & Trust</h3>
+                            <p>Reputation competitors can't easily replicate.</p>
+                            <p>"Nobody ever got fired for buying Salesforce"</p>
+                            <p>Enterprise buyers choose "safe" options. 150,000+ customers = social proof.</p>
+                        </div>
+
+                        <div class="content-section">
+                            <h3>4. Cost Advantage</h3>
+                            <p>Deliver same value at lower cost.</p>
+                            <div class="example-box">
+                                <h4>🔷 Atlassian</h4>
+                                <p>No traditional sales team (saves 20-30%)<br>
+                                Product-led growth via free tiers<br>
+                                Lower CAC = lower prices + higher margins<br>
+                                One of 5 with <12mo payback at scale</p>
+                            </div>
+                        </div>
+
+                        <div class="content-section">
+                            <h3>5. Platform & Ecosystem</h3>
+                            <p>Others build on top of you.</p>
+                            <div class="example-box">
+                                <h4>🐕 Datadog</h4>
+                                <p>17+ products on one platform<br>
+                                Each integration creates dependencies<br>
+                                Switching = reimplementing 10+ tools<br>
+                                Result: NRR >130% for 4+ years</p>
+                            </div>
+                        </div>
+                    `,
+                    quiz: [
+                        {
+                            q: "Which moat drove Figma to 80-90% market share?",
+                            options: ["Cost advantage — Figma is cheapest", "Network effects — collaborative design requires team adoption", "Brand — Figma has longest track record", "Regulatory barriers"],
+                            correct: 1,
+                            explanation: "Collaborative real-time design = whole team must be on same platform. Once one designer joins, everyone follows."
+                        },
+                        {
+                            q: "Salesforce keeps >90% retention despite higher prices. Why?",
+                            options: ["Superior customer support", "Aggressive discounting", "High switching costs from data, integrations, training", "Long-term contracts"],
+                            correct: 2,
+                            explanation: "Switching cost of $500K-$2M+ exceeds any savings from alternatives. Data + integrations + training = lock-in."
+                        },
+                        {
+                            q: "Atlassian achieves <12mo CAC payback at scale. Which moat?",
+                            options: ["Network effects", "Cost advantage via product-led growth (no sales team)", "Regulatory barriers", "Patent protection"],
+                            correct: 1,
+                            explanation: "No traditional sales team = 20-30% cost savings. Free tier drives adoption. Structural cost advantage."
+                        },
+                        {
+                            q: "Per Buffett, what's MORE important than industry growth rate?",
+                            options: ["Current profitability", "Durability of competitive advantage", "Market share", "Revenue growth rate"],
+                            correct: 1,
+                            explanation: "Buffett: 'Above all, the durability of that advantage.' A durable moat in slow industry beats weak moat in hot market."
+                        }
+                    ]
+                },
+                {
+                    id: 6,
+                    title: "Valuation & Exit",
+                    desc: "Multiples, funding, and the endgame",
+                    content: `
+                        <div class="content-section">
+                            <h3>SaaS Valuation Multiples (2024-2025)</h3>
+                            <table class="benchmark-table">
+                                <tr><th>Type</th><th>Median</th><th>Top Quartile</th></tr>
+                                <tr><td>Public SaaS</td><td>6-7x ARR</td><td>10x+</td></tr>
+                                <tr><td>Private SaaS</td><td>5.0x ARR</td><td>8.1x+</td></tr>
+                            </table>
+                            <p><strong>Premium Drivers:</strong></p>
+                            <table class="benchmark-table">
+                                <tr><th>Factor</th><th>Impact</th></tr>
+                                <tr><td>NRR >120%</td><td>2x higher multiple</td></tr>
+                                <tr><td>Gross Margin >80%</td><td>7.6x vs 5.5x</td></tr>
+                                <tr><td>30%+ growth + breakeven</td><td>Upper single digits</td></tr>
+                            </table>
+                        </div>
+
+                        <div class="content-section">
+                            <h3>Funding Stage Expectations</h3>
+                            <table class="benchmark-table">
+                                <tr><th>Stage</th><th>ARR</th><th>Key Metrics</th></tr>
+                                <tr><td>Seed</td><td>$0-1M</td><td>MRR, early traction</td></tr>
+                                <tr><td>Series A</td><td>$1-5M+</td><td>LTV:CAC >3x, PMF</td></tr>
+                                <tr><td>Series B</td><td>$5-20M</td><td><2yr CAC payback</td></tr>
+                                <tr><td>Series C</td><td>$20-50M</td><td>Path to profit</td></tr>
+                                <tr><td>IPO</td><td>$100M+</td><td>Rule of 40 >40%</td></tr>
+                            </table>
+                        </div>
+
+                        <div class="content-section">
+                            <h3>Case Study: Figma</h3>
+                            <p><strong>Adobe offered $20B</strong> at ~$450M ARR (44-50x)</p>
+                            <p><strong>Why?</strong><br>
+                            • 100% YoY growth<br>
+                            • 90%+ gross margins<br>
+                            • 80-90% market share<br>
+                            • Network effects moat</p>
+                            <p><strong>Today (2025):</strong><br>
+                            ARR: $912M | Growth: 48% | NRR: 132%<br>
+                            Rule of 40: 63 | Expected IPO: $19-21B</p>
+                        </div>
+
+                        <div class="content-section">
+                            <h3>Case Study: Slack → Salesforce</h3>
+                            <p><strong>$27.7B acquisition</strong> at ~$900M ARR (~30x)</p>
+                            <p><strong>Reality:</strong> Slack had lost 40% since IPO, $147M losses, Microsoft Teams had 115M users vs Slack's 12M.</p>
+                            <p><strong>Lesson:</strong> Strategic value can drive premium exits even when vulnerable.</p>
+                        </div>
+
+                        <div class="content-section">
+                            <h3>The Exit Checklist</h3>
+                            <table class="benchmark-table">
+                                <tr><th>Metric</th><th>Target</th></tr>
+                                <tr><td>ARR</td><td>$100M+ (IPO)</td></tr>
+                                <tr><td>Growth</td><td>30%+ YoY</td></tr>
+                                <tr><td>NRR</td><td>>110%</td></tr>
+                                <tr><td>Gross Margin</td><td>>75%</td></tr>
+                                <tr><td>Rule of 40</td><td>>40%</td></tr>
+                                <tr><td>CAC Payback</td><td><18 months</td></tr>
+                            </table>
+                        </div>
+                    `,
+                    quiz: [
+                        {
+                            q: "Valuation multiple for NRR >120% vs industry median?",
+                            options: ["No significant difference", "~20% higher", "More than 2x (11.7x vs 5.6x)", "Actually lower due to churn risk"],
+                            correct: 2,
+                            explanation: "NRR >120% = 11.7x multiple. Industry median = 5.6x. Retention is the biggest valuation driver!"
+                        },
+                        {
+                            q: "Adobe offered $20B for Figma at ~$450M ARR. Best explanation?",
+                            options: ["Low churn and strong brand", "100% growth, 90%+ margins, 80-90% market share, network effects", "Large customer base and long history", "Profitability and positive cash flow"],
+                            correct: 1,
+                            explanation: "Hypergrowth + exceptional margins + market dominance + moat = 44-50x multiple. Plus strategic value of eliminating competitor."
+                        },
+                        {
+                            q: "Slack sold for $27.7B despite 40% stock drop and $147M losses. Lesson?",
+                            options: ["Losses don't matter in SaaS", "Strategic value drives premium exits even when vulnerable", "All SaaS gets acquired eventually", "IPO is always worse than acquisition"],
+                            correct: 1,
+                            explanation: "Salesforce saw strategic value: compete with Microsoft, integrate with CRM. Best exit sometimes comes when you're vulnerable — if buyer has strategic need."
+                        },
+                        {
+                            q: "SaaS company targeting IPO should generally have:",
+                            options: ["$10M ARR, 100% growth, any margins", "$50M ARR, 50% growth, breakeven", "$100M+ ARR, 30%+ growth, Rule of 40 >40%", "$500M ARR, 10% growth, 30%+ margins"],
+                            correct: 2,
+                            explanation: "Modern IPO: $100M+ ARR for credibility, 30%+ growth for valuation, Rule of 40 >40% for efficiency."
+                        }
+                    ]
+                }
+            ]
+        };
+
+        // App State
+        let state = {
+            currentLevel: 1,
+            completedLevels: [],
+            currentView: 'home',
+            quizState: null
+        };
+
+        // Load state from localStorage
+        function loadState() {
+            const saved = localStorage.getItem('saas-masterclass-state');
+            if (saved) {
+                state = JSON.parse(saved);
+            }
+        }
+
+        // Save state to localStorage
+        function saveState() {
+            localStorage.setItem('saas-masterclass-state', JSON.stringify(state));
+        }
+
+        // Render home view
+        function renderHome() {
+            const container = document.getElementById('levels-container');
+            const progressBar = document.getElementById('progress-bar');
+            const progressText = document.getElementById('progress-text');
+
+            const completedCount = state.completedLevels.length;
+            const totalLevels = courseData.levels.length;
+            const progressPercent = (completedCount / totalLevels) * 100;
+
+            progressBar.style.width = progressPercent + '%';
+            progressText.textContent = `${completedCount} of ${totalLevels} levels completed`;
+
+            if (completedCount === totalLevels) {
+                container.innerHTML = `
+                    <div class="graduation-view">
+                        <div class="graduation-icon">🎓</div>
+                        <div class="graduation-title">You've Mastered SaaS Economics!</div>
+                        <p>You now understand what VCs, CFOs, and successful founders know.</p>
+                        <p style="margin-top: 20px; color: #a1a1aa;">ARR • LTV:CAC • NRR • Rule of 40 • Moats • Valuation</p>
+                        <p style="margin-top: 30px; font-style: italic; color: #667eea;">"Price is what you pay. Value is what you get." — Buffett</p>
+                        <button class="reset-btn" onclick="resetProgress()">Start Over</button>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = courseData.levels.map((level, idx) => {
+                const isCompleted = state.completedLevels.includes(level.id);
+                const isCurrent = level.id === state.currentLevel;
+                const isLocked = level.id > state.currentLevel;
+
+                let statusClass = '';
+                let statusText = '';
+
+                if (isCompleted) {
+                    statusClass = 'completed';
+                    statusText = '<span class="level-status status-completed">✓ Complete</span>';
+                } else if (isCurrent) {
+                    statusClass = 'current';
+                    statusText = '<span class="level-status status-current">Current</span>';
+                } else if (isLocked) {
+                    statusClass = 'locked';
+                    statusText = '<span class="level-status status-locked">🔒 Locked</span>';
+                }
+
+                return `
+                    <div class="level-card ${statusClass}" onclick="${isLocked ? '' : `openLevel(${level.id})`}">
+                        <div class="level-header">
+                            <span class="level-number">Level ${level.id}</span>
+                            ${statusText}
+                        </div>
+                        <div class="level-title">${level.title}</div>
+                        <div class="level-desc">${level.desc}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Open level content
+        function openLevel(levelId) {
+            const level = courseData.levels.find(l => l.id === levelId);
+            if (!level) return;
+
+            state.currentView = 'content';
+            state.quizState = {
+                levelId: levelId,
+                currentQuestion: 0,
+                answers: [],
+                showingQuiz: false,
+                submitted: false
+            };
+
+            renderContent(level);
+        }
+
+        // Render content view
+        function renderContent(level) {
+            document.getElementById('home-view').style.display = 'none';
+            const contentView = document.getElementById('content-view');
+            contentView.classList.add('active');
+
+            contentView.innerHTML = `
+                <button class="back-btn" onclick="goHome()">← Back to Levels</button>
+                <div class="level-number">Level ${level.id}</div>
+                <h1 class="content-title">${level.title}</h1>
+
+                <div id="lesson-content">
+                    ${level.content}
+
+                    <div class="quiz-section">
+                        <h2 class="quiz-title">📝 Level ${level.id} Quiz</h2>
+                        <p style="text-align: center; color: #a1a1aa; margin-bottom: 20px;">Score 100% to unlock the next level</p>
+                        <button class="start-quiz-btn" onclick="startQuiz(${level.id})">Start Quiz</button>
+                    </div>
+                </div>
+
+                <div id="quiz-content" style="display: none;"></div>
+            `;
+
+            window.scrollTo(0, 0);
+        }
+
+        // Start quiz
+        function startQuiz(levelId) {
+            state.quizState.showingQuiz = true;
+            state.quizState.currentQuestion = 0;
+            state.quizState.answers = [];
+            renderQuiz();
+        }
+
+        // Render quiz
+        function renderQuiz() {
+            const level = courseData.levels.find(l => l.id === state.quizState.levelId);
+            const quiz = level.quiz;
+            const qIdx = state.quizState.currentQuestion;
+            const question = quiz[qIdx];
+
+            document.getElementById('lesson-content').style.display = 'none';
+            const quizContent = document.getElementById('quiz-content');
+            quizContent.style.display = 'block';
+
+            quizContent.innerHTML = `
+                <button class="back-btn" onclick="goHome()">← Back to Levels</button>
+                <div class="quiz-progress">Question ${qIdx + 1} of ${quiz.length}</div>
+
+                <div class="question-card">
+                    <div class="question-text">${question.q}</div>
+
+                    <div id="options-container">
+                        ${question.options.map((opt, idx) => `
+                            <button class="option" onclick="selectOption(${idx})" id="option-${idx}">
+                                ${String.fromCharCode(65 + idx)}) ${opt}
+                            </button>
+                        `).join('')}
+                    </div>
+
+                    <div class="explanation" id="explanation">
+                        ${question.explanation}
+                    </div>
+
+                    <button class="submit-btn" id="submit-btn" onclick="submitAnswer()" disabled>
+                        Check Answer
+                    </button>
+
+                    <button class="next-btn" id="next-btn" style="display: none;" onclick="nextQuestion()">
+                        ${qIdx === quiz.length - 1 ? 'See Results' : 'Next Question →'}
+                    </button>
+                </div>
+            `;
+
+            window.scrollTo(0, 0);
+        }
+
+        // Select option
+        let selectedOption = null;
+
+        function selectOption(idx) {
+            if (state.quizState.submitted) return;
+
+            selectedOption = idx;
+            document.querySelectorAll('.option').forEach((opt, i) => {
+                opt.classList.remove('selected');
+                if (i === idx) opt.classList.add('selected');
+            });
+            document.getElementById('submit-btn').disabled = false;
+        }
+
+        // Submit answer
+        function submitAnswer() {
+            if (selectedOption === null) return;
+
+            state.quizState.submitted = true;
+            const level = courseData.levels.find(l => l.id === state.quizState.levelId);
+            const question = level.quiz[state.quizState.currentQuestion];
+            const isCorrect = selectedOption === question.correct;
+
+            state.quizState.answers.push(isCorrect);
+
+            document.querySelectorAll('.option').forEach((opt, i) => {
+                opt.disabled = true;
+                if (i === question.correct) {
+                    opt.classList.add('correct');
+                } else if (i === selectedOption && !isCorrect) {
+                    opt.classList.add('incorrect');
+                }
+            });
+
+            document.getElementById('explanation').classList.add('show');
+            document.getElementById('submit-btn').style.display = 'none';
+            document.getElementById('next-btn').style.display = 'block';
+        }
+
+        // Next question
+        function nextQuestion() {
+            const level = courseData.levels.find(l => l.id === state.quizState.levelId);
+
+            if (state.quizState.currentQuestion >= level.quiz.length - 1) {
+                showResults();
+                return;
+            }
+
+            state.quizState.currentQuestion++;
+            state.quizState.submitted = false;
+            selectedOption = null;
+            renderQuiz();
+        }
+
+        // Show results
+        function showResults() {
+            const correctCount = state.quizState.answers.filter(a => a).length;
+            const total = state.quizState.answers.length;
+            const passed = correctCount === total;
+
+            const quizContent = document.getElementById('quiz-content');
+
+            if (passed) {
+                // Mark level as completed
+                if (!state.completedLevels.includes(state.quizState.levelId)) {
+                    state.completedLevels.push(state.quizState.levelId);
+                }
+                // Unlock next level
+                if (state.currentLevel === state.quizState.levelId) {
+                    state.currentLevel = Math.min(state.quizState.levelId + 1, courseData.levels.length);
+                }
+                saveState();
+            }
+
+            quizContent.innerHTML = `
+                <div class="results-card">
+                    <div class="results-icon">${passed ? '🎉' : '📚'}</div>
+                    <div class="results-title">${passed ? 'Level Complete!' : 'Not Quite...'}</div>
+                    <div class="results-score">${correctCount}/${total}</div>
+                    <div class="results-message">
+                        ${passed
+                            ? 'You\'ve mastered this level. Next level unlocked!'
+                            : 'You need 100% to proceed. Review the material and try again.'}
+                    </div>
+                    ${passed
+                        ? `<button class="next-btn" onclick="goHome()">Continue →</button>`
+                        : `<button class="retry-btn" onclick="openLevel(${state.quizState.levelId})">Review & Retry</button>`
+                    }
+                </div>
+            `;
+        }
+
+        // Go home
+        function goHome() {
+            state.currentView = 'home';
+            state.quizState = null;
+            selectedOption = null;
+
+            document.getElementById('home-view').style.display = 'block';
+            document.getElementById('content-view').classList.remove('active');
+            document.getElementById('content-view').innerHTML = '';
+
+            renderHome();
+            window.scrollTo(0, 0);
+        }
+
+        // Reset progress
+        function resetProgress() {
+            if (confirm('Reset all progress? This cannot be undone.')) {
+                state = {
+                    currentLevel: 1,
+                    completedLevels: [],
+                    currentView: 'home',
+                    quizState: null
+                };
+                saveState();
+                renderHome();
+            }
+        }
+
+        // Initialize
+        loadState();
+        renderHome();
+    </script>
+</body>
+</html>
