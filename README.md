@@ -107,8 +107,8 @@ Progress saves automatically. Pick up where you left off.
 
 ---
 
-### [>>> START LEARNING <<<](https://sorinaw.github.io/SaaS-Economics-Masterclass/)
+*Built with lessons from Buffett, Bessemer, and the best SaaS operators.*
 
 ---
 
-*Built with lessons from Buffett, Bessemer, and the best SaaS operators.*
+### [>>> START LEARNING <<<](https://sorinaw.github.io/SaaS-Economics-Masterclass/)
